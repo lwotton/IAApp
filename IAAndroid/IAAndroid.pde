@@ -12,7 +12,7 @@ Twitter twitter;
 List<Status> tweets;
 int currentTweet;
 double longitude, latitude;
-KetaiLocation location;
+//KetaiLocation location;
 
 void setup()
 {
@@ -28,15 +28,17 @@ void setup()
     getNewTweets();
     currentTweet = 0;
     thread("refreshTweets");
+    latitude = 50.3752770;
+    longitude = -4.1366650;
+    textAlign(CENTER,CENTER);
+    background(255);
     //Android Location
-    location = new KetaiLocation(this);
+    //location = new KetaiLocation(this);
 }
 
 void draw()
 {
-    fill(0, 40);
-    rect(0, 0, width, height);
-
+    background(255);
     currentTweet = currentTweet + 1;
 
     if (currentTweet >= tweets.size())
@@ -45,18 +47,20 @@ void draw()
     }
 
     Status status = tweets.get(currentTweet);
+    fill(0,102,153,204);
+    text(status.getText(), width/2,height/2);    
+    delay(5000);
+    
+    
 
-    fill(200);
-    text(status.getText(), random(width), random(height), 300, 200);
-
-    delay(250);
 }
 
 void getNewTweets()
 {
     try 
     {
-        Query query = new Query().geoCode(geo,1,"mi");
+        GeoLocation geo = new GeoLocation(latitude,longitude);
+        Query query = new Query().geoCode(geo,3,"mi");
 
         QueryResult result = twitter.search(query);
 
@@ -74,9 +78,7 @@ void refreshTweets()
     while (true)
     {
         getNewTweets();
-
         println("Updated Tweets"); 
-
         delay(30000);
     }
 }
